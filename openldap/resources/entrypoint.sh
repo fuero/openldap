@@ -15,6 +15,6 @@ fi
 
 # Start OpenLDAP in foreground
 info "Starting OpenLDAP"
-start_ldap -d 256
+start_ldap -d "${SLAPD_LOG_LEVEL:-256}"
 
 exit 0

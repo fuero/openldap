@@ -110,10 +110,12 @@ info 'Importing LDAP organization'
 ldapmodify -H ldapi:/// -D cn=admin,$ORG_DN -w $ROOT_SECRET -f /tmp/org-init.ldif || fatal 'Could not create organization!'
 
 info 'Importing schemas'
+shopt -s nullglob
 for schema in /app/schema/*.ldif; do
     info "Applying $schema"
     ldapmodify -a -Y EXTERNAL -H ldapi:/// -f $schema || fatal "Could not apply ${schema}!"
 done
+shopt -u nullglob
 
 sleep 1
 kill -s SIGINT $LDAP_PID

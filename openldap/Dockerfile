@@ -1,13 +1,17 @@
-FROM ubuntu:22.04
+FROM debian:trixie
 
-# Add Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
 
 # Install OpenLDAP
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y slapd ldap-utils openssl ca-certificates
+RUN bash <<EOF
+set -euo pipefail
+apt update
+export DEBIAN_FRONTEND=noninteractive
+apt install -y \
+      slapd ldap-utils openssl ca-certificates \
+      slapd-contrib tini procps
+apt clean
+rm -rf /var/cache/apt
+EOF
 
 # Copy project files
 COPY resources /app
@@ -16,4 +20,5 @@ COPY resources /app
 WORKDIR /app/
 
 # Run your program under Tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["/app/entrypoint.sh"]
