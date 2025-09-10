@@ -125,4 +125,4 @@ touch /config/.configured.flag
 
 # Cleanup
 rm -rf /tmp/*
-rm -rf /etc/ldap
+#rm -rf /etc/ldap
